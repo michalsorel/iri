@@ -1,4 +1,4 @@
-# iri
+# Precise International Roughness Index (IRI) calculation
 Matlab code for the computation of International Roughness Index (IRI) provided with our paper 
 F. Sroubek, M. Sorel, J. Zak: Precise International Roughness Index Calculation. Int. J. Pavement Res. Technol. (2021).
 If you use this code in your academic work, please cite our paper properly according
