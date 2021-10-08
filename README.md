@@ -2,7 +2,8 @@
 Matlab code for the computation of International Roughness Index (IRI) provided with our paper 
 F. Sroubek, M. Sorel, J. Zak: Precise International Roughness Index Calculation. Int. J. Pavement Res. Technol. (2021).
 If you use this code in your academic work, please cite our paper properly according
-https://doi.org/10.1007/s42947-021-00097-z . We plan to add a Python version in near future, stay tuned.
+https://doi.org/10.1007/s42947-021-00097-z . The paper can be found also on our page 
+http://www.utia.cas.cz/biblio?pub=0545847 . We plan to add a Python version in near future, stay tuned.
 
 There are two example profiles in the repository:
 - profile_1.txt ... regular sampling 0.25m 
