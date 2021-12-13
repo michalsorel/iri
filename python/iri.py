@@ -77,12 +77,12 @@ parser.add_argument("iri_file", type=str,
 parser.add_argument("-segment_length", type=float, default=20, help="Length of the IRI segment (typically 20 or 100 meters). If missing, set to 20m.")
 parser.add_argument("-start_pos", type= float, default=-1, help = "Starting position of IRI segments. If empty, set to the first sample.")
 parser.add_argument("-step", type= float, default=0, help = "If missing or 0, IRI is computed in non-overlapping segments. Otherwise, this is the shift of consecutive IRI segments in meters, often set to sampling step for regular sampling.")
-parser.add_argument("-box_filter", action="store_true", help = "If passed, profile is first averaged with a box filter of length 0.25m as recommended in Sayers' paper for sampling intervals shorter than 0.25m to better represent the way in which the tire of a vehicle envelops the ground.")
+parser.add_argument("-filter_off", action="store_true", help = "If missing, for sampling intervals shorter than 0.25m, profile is first averaged with a box filter of length 0.25m as recommended in Sayers' paper to better represent the way in which the tire of a vehicle envelops the ground. If present, the filtering is turned off completely.")
 parser.add_argument("-method", type=int, default=2, choices = [0, 2], help = "0 - Sayers' implementation, for irregular sampling first resampled; 2(default) - our semi-analytical solution (Sroubek & Sorel).")
 
 args = parser.parse_args()
 
-def iri(Y, segment_length, start_pos, step, box_filter, method):
+def iri(Y, segment_length, start_pos, step, box_filter = True, method = 2):
 
     """
         IRI calculate IRI 
@@ -102,15 +102,14 @@ def iri(Y, segment_length, start_pos, step, box_filter, method):
                       as recommended in Sayers' paper for sampling intervals
                       shorter than 0.25m to better represent the way in which 
                       the tire of a vehicle envelops the ground.
-        method ...    0 - Sayers' implementation, for irregular sampling first resampled                
+        method ...    0 - Sayers' implementation, for regular sampling only
                       1 - numerical solver ode45 (in Python not implemented),
                       2(default) - our semi-analytical solution (Sroubek & Sorel)
 
         Output:
-        IRI ... IRI vector calculated in segments; matrix with rows
-                  [star_pos, end_pos, IRI, std_of_IRI]
-                 std_of_IRI is standard deviation of IRI within each segment
-        IRI is in mm/m [equivalent to m/km]
+        IRI ... four-column IRI matrix, with columns [star_pos, end_pos, IRI, std_of_IRI],
+                where std_of_IRI is the standard deviation of IRI within each segment.
+                IRI is in mm/m (equivalent to m/km).
     """
 
     if segment_length == -1:
@@ -190,7 +189,7 @@ def iri(Y, segment_length, start_pos, step, box_filter, method):
             tA = np.matmul(tA,A)
         p = np.linalg.solve(A,np.matmul(S-np.identity(4),b))
         if equidistant == False:
-            print('Sayers method for irregular sampling does not work (would take too long).')
+            print('Sayers method for irregular sampling does not work, first resample to equidistant samples.')
             return
         if np.count_nonzero(YC[:,0]==start_pos) == 0:
             print('Starting positions in Sayers method must coincide with input sampling.')
@@ -370,7 +369,12 @@ def plot_iri(IRI,YC, title, plot_file):
 
 if __name__ == "__main__":   
     road_profile = np.genfromtxt(args.input_file, delimiter=args.delimiter, skip_header=args.skip_header)
-    Solution, equidistant = iri(road_profile, args.segment_length, args.start_pos, args.step, args.box_filter, args.method)
+    if args.filter_off:
+        box_filter = False        
+    else:
+        box_filter = True 
+    print('Box filter: ', box_filter)
+    Solution, equidistant = iri(road_profile, args.segment_length, args.start_pos, args.step, box_filter, args.method)
     output_folder = os.path.dirname(args.iri_file)
     if not output_folder:
         output_folder = '.'
