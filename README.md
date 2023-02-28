@@ -1,10 +1,12 @@
 # Precise International Roughness Index (IRI) calculation
 Matlab and Python codes for the computation of International Roughness Index (IRI) provided with our paper 
 F. Sroubek, M. Sorel, J. Zak: Precise International Roughness Index Calculation. Int. J. Pavement Res. Technol. (2021).
-If you use this code in your academic work, please cite our paper properly according
+
+If you use this code in your academic work or any work with publicly available reports, please cite our paper according
 https://doi.org/10.1007/s42947-021-00097-z. The paper can be found also on our page 
-http://www.utia.cas.cz/biblio?pub=0545847. The Python version also contains a command line tool to work
-directly on files with profile data.
+http://www.utia.cas.cz/biblio?pub=0545847. 
+
+The Python version contains a command line tool to work directly on files with profile data.
 
 The core function iri (in iri.m for Matlab and iri.py for Python) contains the implementation of three methods: original
 Sayers' method, using numerical solver ode45 and the method
